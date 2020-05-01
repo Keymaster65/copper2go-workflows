@@ -27,6 +27,10 @@ public class Hello extends Workflow<HelloData> {
 
     private transient ContextStore contextStore;
 
+    private transient RequestReceiver requestReceiver = new RequestReceiver();
+    private transient ResponseSender responseSender = new ResponseSender();
+    private transient Mapper mapper = new Mapper();
+
     @AutoWire
     public void setContextStore(ContextStore contextStore) {
         this.contextStore = contextStore;
@@ -35,13 +39,11 @@ public class Hello extends Workflow<HelloData> {
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
-        //LockSupport.parkNanos(3000000000L);
-        //wait(WaitMode.ALL,1000, "CORR" );
-        contextStore.reply(getData().getUUID(), createResponse());
+        HelloContext context = requestReceiver.receiveMessage(getData().getUUID(), contextStore);
+        mapper.mapRequest(context);
+        mapper.mapResponse(context);
+        responseSender.sendResponse(context, contextStore);
         logger.info("finish workflow 1.0");
     }
-    private String createResponse() {
-        String request = contextStore.getContext(getData().getUUID()).getRequest();
-        return "HEllo " + request + "!";
-    }
+
 }
