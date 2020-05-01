@@ -12,6 +12,6 @@ public class Mapper {
     }
 
     public void mapResponse(final HelloContext context) {
-        context.response = "HEllo " + context.name + "! Please transfer " + context.price;
+        context.response = "Hello " + context.name + "! Please transfer " + context.price;
     }
 }
