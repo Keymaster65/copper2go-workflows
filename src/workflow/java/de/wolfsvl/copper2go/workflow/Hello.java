@@ -51,9 +51,9 @@ public class Hello extends Workflow<HelloData> {
 
     private void calculatePrice(final HelloContext context, final long startMillis) {
         long now = System.currentTimeMillis();
-        double pricePerMinute = 0.12;
+        double pricePerSecond = 0.12;
         long durarionMillis = now - startMillis;
-        context.price = pricePerMinute * (durarionMillis/1000L/60L);
+        context.price = pricePerSecond * (durarionMillis/1000L/60L);
     }
 
 }
