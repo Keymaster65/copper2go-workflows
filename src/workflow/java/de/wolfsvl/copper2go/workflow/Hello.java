@@ -42,7 +42,7 @@ public class Hello extends Workflow<HelloData> {
         long startMillis = System.currentTimeMillis();
         HelloContext context = requestReceiver.receiveMessage(getData().getUUID(), contextStore);
         mapper.mapRequest(context);
-        wait(WaitMode.FIRST, context.name.length() * 100, "dummy");
+        wait(WaitMode.FIRST, context.name.length() * 100 + 1, "dummy");
         calculatePrice(context, startMillis);
         mapper.mapResponse(context);
         responseSender.sendResponse(context, contextStore);
