@@ -53,7 +53,7 @@ public class Hello extends Workflow<HelloData> {
         long now = System.currentTimeMillis();
         double pricePerSecond = 0.12;
         long durarionMillis = now - startMillis;
-        context.price = pricePerSecond * (durarionMillis/1000L/60L);
+        context.price = pricePerSecond * ((double) durarionMillis/1000L);
     }
 
 }
