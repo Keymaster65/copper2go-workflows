@@ -39,11 +39,21 @@ public class Hello extends Workflow<HelloData> {
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
+        long startMillis = System.currentTimeMillis();
         HelloContext context = requestReceiver.receiveMessage(getData().getUUID(), contextStore);
         mapper.mapRequest(context);
+        wait(WaitMode.FIRST, 100, "dummy");
+        calculatePrice(context, startMillis);
         mapper.mapResponse(context);
         responseSender.sendResponse(context, contextStore);
         logger.info("finish workflow 1.0");
+    }
+
+    private void calculatePrice(final HelloContext context, final long startMillis) {
+        long now = System.currentTimeMillis();
+        double pricePerMinute = 0.12;
+        long durarionMillis = now - startMillis;
+        context.price = pricePerMinute * (durarionMillis/1000L/60L);
     }
 
 }
