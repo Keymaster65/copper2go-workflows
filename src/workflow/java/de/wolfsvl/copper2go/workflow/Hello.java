@@ -15,11 +15,11 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
+import de.wolfsvl.copper2go.workflowapi.ContextStore;
+import de.wolfsvl.copper2go.workflowapi.HelloData;
 import org.copperengine.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.wolfsvl.copper2go.workflowapi.ContextStore;
-import de.wolfsvl.copper2go.workflowapi.HelloData;
 
 @WorkflowDescription(alias = "Hello", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
 public class Hello extends Workflow<HelloData> {
@@ -42,7 +42,7 @@ public class Hello extends Workflow<HelloData> {
         long startMillis = System.currentTimeMillis();
         HelloContext context = requestReceiver.receiveMessage(getData().getUUID(), contextStore);
         mapper.mapRequest(context);
-        wait(WaitMode.FIRST, 2000, "dummy");
+        wait(WaitMode.FIRST, context.name.length() * 100, "dummy");
         calculatePrice(context, startMillis);
         mapper.mapResponse(context);
         responseSender.sendResponse(context, contextStore);
@@ -53,7 +53,7 @@ public class Hello extends Workflow<HelloData> {
         long now = System.currentTimeMillis();
         double pricePerSecond = 0.12;
         long durarionMillis = now - startMillis;
-        context.price = pricePerSecond * ((double) durarionMillis/1000L);
+        context.price = pricePerSecond * ((double) durarionMillis / 1000L);
     }
 
 }
