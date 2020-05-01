@@ -27,9 +27,10 @@ public class Hello extends Workflow<HelloData> {
 
     private transient ContextStore contextStore;
 
-    private transient RequestReceiver requestReceiver = new RequestReceiver();
-    private transient ResponseSender responseSender = new ResponseSender();
-    private transient Mapper mapper = new Mapper();
+    private final transient RequestReceiver requestReceiver = new RequestReceiver();
+    private final transient ResponseSender responseSender = new ResponseSender();
+    private final transient Mapper mapper = new Mapper();
+    private final transient BusinessRules businessRules = new BusinessRules();
 
     @AutoWire
     public void setContextStore(ContextStore contextStore) {
@@ -43,17 +44,12 @@ public class Hello extends Workflow<HelloData> {
         HelloContext context = requestReceiver.receiveMessage(getData().getUUID(), contextStore);
         mapper.mapRequest(context);
         wait(WaitMode.FIRST, context.name.length() * 100 + 1, "dummy");
-        calculatePrice(context, startMillis);
+        businessRules.calculatePrice(context, startMillis, System.currentTimeMillis());;
         mapper.mapResponse(context);
         responseSender.sendResponse(context, contextStore);
         logger.info("finish workflow 1.0");
     }
 
-    private void calculatePrice(final HelloContext context, final long startMillis) {
-        long now = System.currentTimeMillis();
-        double pricePerSecond = 0.12;
-        long durarionMillis = now - startMillis;
-        context.price = pricePerSecond * ((double) durarionMillis / 1000L);
-    }
+
 
 }
