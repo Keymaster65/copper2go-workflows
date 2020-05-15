@@ -42,6 +42,6 @@ public class Hello extends Workflow<HelloData> {
     }
     private String createResponse() {
         String request = contextStore.getContext(getData().getUUID()).getRequest();
-        return "HEllo " + request + "! (Fix the bug;-)";
+        return "Hello " + request + "! (Fix the bug;-)";
     }
 }
