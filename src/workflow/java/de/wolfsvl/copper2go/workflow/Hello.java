@@ -17,7 +17,11 @@ package de.wolfsvl.copper2go.workflow;
 
 import de.wolfsvl.copper2go.workflowapi.ContextStore;
 import de.wolfsvl.copper2go.workflowapi.HelloData;
-import org.copperengine.core.*;
+import org.copperengine.core.AutoWire;
+import org.copperengine.core.Interrupt;
+import org.copperengine.core.WaitMode;
+import org.copperengine.core.Workflow;
+import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,31 +29,34 @@ import org.slf4j.LoggerFactory;
 public class Hello extends Workflow<HelloData> {
     private static final Logger logger = LoggerFactory.getLogger(Hello.class);
 
-    private transient ContextStore contextStore;
+    @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion
+    private String name;
 
-    private final transient RequestReceiver requestReceiver = new RequestReceiver();
-    private final transient ResponseSender responseSender = new ResponseSender();
-    private final transient Mapper mapper = new Mapper();
-    private final transient BusinessRules businessRules = new BusinessRules();
+    private transient ContextStore contextStore;
 
     @AutoWire
     public void setContextStore(ContextStore contextStore) {
         this.contextStore = contextStore;
     }
 
+
+    public String getRequest() {
+        return contextStore.getContext(getData().getUUID()).getRequest();
+    }
+
+    public void reply(final String message) {
+        contextStore.reply(getData().getUUID(), message);
+    }
+
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
         long startMillis = System.currentTimeMillis();
-        HelloContext context = requestReceiver.receiveMessage(getData().getUUID(), contextStore);
-        mapper.mapRequest(context);
-        wait(WaitMode.FIRST, context.name.length() * 100 + 1, "dummy");
-        businessRules.calculatePrice(context, startMillis, System.currentTimeMillis());;
-        mapper.mapResponse(context);
-        responseSender.sendResponse(context, contextStore);
+        name = Mapper.mapRequest(getRequest());
+        wait(WaitMode.FIRST, getRequest().length() + 1, "dummy");
+        reply(Mapper.mapResponse(this.name, BusinessRules.calculatePrice(startMillis, System.currentTimeMillis())));
         logger.info("finish workflow 1.0");
     }
-
 
 
 }

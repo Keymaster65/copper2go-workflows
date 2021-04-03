@@ -1,17 +1,17 @@
 package de.wolfsvl.copper2go.workflow;
 
 public class Mapper {
-    public void mapRequest(final HelloContext context) {
-        String request = context.getRequest();
+    private Mapper() {}
+
+    public static String mapRequest(final String request) {
         final int blankPosition = request.indexOf(' ');
         if (blankPosition > 1) {
-            context.name = request.substring(0, blankPosition);
-        } else {
-            context.name = request;
+            return request.substring(0, blankPosition);
         }
+        return request;
     }
 
-    public void mapResponse(final HelloContext context) {
-        context.response = "Hello " + context.name + "! Please transfer " + (long) (context.price * 100L) + " cent";
+    public static String mapResponse(final String name, final double price) {
+        return "Hello " + name + "! Please transfer " + (long) (price * 100L) + " cent";
     }
 }
