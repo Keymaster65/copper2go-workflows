@@ -53,7 +53,7 @@ public class Hello extends Workflow<HelloData> {
         logger.info("begin workflow 1.0");
         long startMillis = System.currentTimeMillis();
         name = Mapper.mapRequest(getRequest());
-        wait(WaitMode.FIRST, getRequest().length() + 1, "dummy");
+        wait(WaitMode.FIRST, 100 * (getRequest().length() + 1), "dummy");
         reply(Mapper.mapResponse(this.name, BusinessRules.calculatePrice(startMillis, System.currentTimeMillis())));
         logger.info("finish workflow 1.0");
     }
