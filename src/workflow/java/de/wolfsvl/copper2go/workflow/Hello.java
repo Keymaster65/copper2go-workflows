@@ -21,6 +21,7 @@ import de.wolfsvl.copper2go.workflowapi.HelloData;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
 import org.copperengine.core.Response;
+import org.copperengine.core.WaitMode;
 import org.copperengine.core.Workflow;
 import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
@@ -94,10 +95,10 @@ public class Hello extends Workflow<HelloData> {
     }
 
 
-    private void callCentPerMinute(final String correlationId, final String name) throws Interrupt {
+        private void callCentPerMinute(final String correlationId, final String name) throws Interrupt {
         String pricingRequest = Mapper.mapPricingRequest(name);
         eventChannelStore.event("System.stdout", pricingRequest);
-        //wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationId);
+        wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationId);
     }
 
 
