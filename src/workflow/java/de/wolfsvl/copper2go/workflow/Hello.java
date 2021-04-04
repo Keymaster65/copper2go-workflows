@@ -15,8 +15,8 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import de.wolfsvl.copper2go.workflowapi.EventChannelStore;
 import de.wolfsvl.copper2go.workflowapi.ContextStore;
+import de.wolfsvl.copper2go.workflowapi.EventChannelStore;
 import de.wolfsvl.copper2go.workflowapi.HelloData;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
@@ -44,7 +44,7 @@ public class Hello extends Workflow<HelloData> {
     private transient EventChannelStore eventChannelStore;
 
     @AutoWire
-    public void setChannelStore(EventChannelStore eventChannelStore) {
+    public void setEventChannelStore(EventChannelStore eventChannelStore) {
         this.eventChannelStore = eventChannelStore;
     }
 
@@ -82,10 +82,13 @@ public class Hello extends Workflow<HelloData> {
     }
 
     private int getPricePerMinute(final Response<String> response) {
-        if(response.isTimeout()) {
-
+        if (response == null) {
+            return 1;
+        }
+        if (response.isTimeout()) {
+            return 2;
         } else if (null != response.getException()) {
-
+            return 3;
         }
         return Integer.parseInt(response.getResponse());
     }
