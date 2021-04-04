@@ -3,9 +3,8 @@ package de.wolfsvl.copper2go.workflow;
 public class BusinessRules {
     private BusinessRules() {}
 
-    static double calculatePrice(final long startMillis, final long now) {
-        double pricePerSecond = 0.12;
+    static double calculatePrice(final long startMillis, final long now, final int pricePerMinute) {
         long durarionMillis = now - startMillis;
-        return pricePerSecond * ((double) durarionMillis / 1000L);
+        return pricePerMinute * ((double) durarionMillis / (60L * 1000L));
     }
 }

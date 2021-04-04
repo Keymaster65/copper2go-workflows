@@ -8,7 +8,8 @@ class BusinessRulesTest {
 
     @Test
     void calculatePriceTest() {
-        assertThat(BusinessRules.calculatePrice(1000L, 2000L)).isEqualTo(0.12);
+        assertThat(BusinessRules.calculatePrice(1000L, 2000L, 60)).isEqualTo(1);
+        assertThat(BusinessRules.calculatePrice(0, 60000L, 60)).isEqualTo(60);
     }
 
 }
