@@ -97,7 +97,7 @@ public class Hello extends Workflow<HelloData> {
         if (response.isTimeout()) {
             return 2;
         } else if (null != response.getException()) {
-            return 3;
+            throw new WorkflowRuntimeException("Could not get price.", response.getException());
         }
         return 10; // Integer.parseInt(response.getResponse());
     }
