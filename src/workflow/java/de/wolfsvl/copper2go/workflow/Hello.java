@@ -18,6 +18,7 @@ package de.wolfsvl.copper2go.workflow;
 import de.wolfsvl.copper2go.workflowapi.ContextStore;
 import de.wolfsvl.copper2go.workflowapi.EventChannelStore;
 import de.wolfsvl.copper2go.workflowapi.HelloData;
+import de.wolfsvl.copper2go.workflowapi.RequestChannelStore;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
 import org.copperengine.core.Response;
@@ -49,6 +50,13 @@ public class Hello extends Workflow<HelloData> {
         this.eventChannelStore = eventChannelStore;
     }
 
+    private transient RequestChannelStore requestChannelStore;
+
+    @AutoWire
+    public void setRequestChannelStore(RequestChannelStore requestChannelStore) {
+        this.requestChannelStore = requestChannelStore;
+    }
+
 
     public String getRequest() {
         return contextStore.getContext(getData().getUUID()).getRequest();
@@ -65,7 +73,7 @@ public class Hello extends Workflow<HelloData> {
             long startMillis = System.currentTimeMillis();
             name = Mapper.mapRequest(getRequest());
             String correlationId = getEngine().createUUID();
-            callCentPerMinute(correlationId, name);
+            callCentPerMinute(Mapper.mapPricingRequest(name), correlationId);
 
             final String response = Mapper.mapResponse(
                     this.name,
@@ -91,13 +99,12 @@ public class Hello extends Workflow<HelloData> {
         } else if (null != response.getException()) {
             return 3;
         }
-        return Integer.parseInt(response.getResponse());
+        return 10; // Integer.parseInt(response.getResponse());
     }
 
 
-        private void callCentPerMinute(final String correlationId, final String name) throws Interrupt {
-        String pricingRequest = Mapper.mapPricingRequest(name);
-        eventChannelStore.event("System.stdout", pricingRequest);
+    private void callCentPerMinute(final String pricingRequest, final String correlationId) throws Interrupt {
+        requestChannelStore.request("Pricing.centPerMinute", pricingRequest, correlationId);
         wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationId);
     }
 
