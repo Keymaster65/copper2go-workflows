@@ -92,14 +92,14 @@ public class Hello extends Workflow<HelloData> {
 
     private int getPricePerMinute(final Response<String> response) {
         if (response == null) {
-            return 1;
+            throw new WorkflowRuntimeException("Response is null, could not get price.");
         }
         if (response.isTimeout()) {
-            return 2;
+            throw new WorkflowRuntimeException("Timeout, could not get price.");
         } else if (null != response.getException()) {
             throw new WorkflowRuntimeException("Could not get price.", response.getException());
         }
-        return 10; // Integer.parseInt(response.getResponse());
+        return Integer.parseInt(response.getResponse());
     }
 
 
