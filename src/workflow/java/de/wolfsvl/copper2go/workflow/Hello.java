@@ -17,8 +17,8 @@ package de.wolfsvl.copper2go.workflow;
 
 import de.wolfsvl.copper2go.workflowapi.ContextStore;
 import de.wolfsvl.copper2go.workflowapi.EventChannelStore;
-import de.wolfsvl.copper2go.workflowapi.HelloData;
 import de.wolfsvl.copper2go.workflowapi.RequestChannelStore;
+import de.wolfsvl.copper2go.workflowapi.WorkflowData;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
 import org.copperengine.core.Response;
@@ -29,9 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WorkflowDescription(alias = "Hello", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
-public class Hello extends Workflow<HelloData> {
+public class Hello extends Workflow<WorkflowData> {
     private static final Logger logger = LoggerFactory.getLogger(Hello.class);
     public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 3000;
+    private static final long serialVersionUID = 1;
 
     @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion
     private String name;
