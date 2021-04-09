@@ -19,10 +19,10 @@ import org.copperengine.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.wolfsvl.copper2go.workflowapi.ContextStore;
-import de.wolfsvl.copper2go.workflowapi.HelloData;
+import de.wolfsvl.copper2go.workflowapi.WorkflowData;
 
 @WorkflowDescription(alias = "Hello", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
-public class Hello extends Workflow<HelloData> {
+public class Hello extends Workflow<WorkflowData> {
     private static final Logger logger = LoggerFactory.getLogger(Hello.class);
 
     private transient ContextStore contextStore;
