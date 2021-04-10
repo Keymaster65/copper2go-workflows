@@ -15,7 +15,7 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import de.wolfsvl.copper2go.workflowapi.ContextStore;
+import de.wolfsvl.copper2go.workflowapi.ReplyChannelStore;
 import de.wolfsvl.copper2go.workflowapi.EventChannelStore;
 import de.wolfsvl.copper2go.workflowapi.RequestChannelStore;
 import de.wolfsvl.copper2go.workflowapi.WorkflowData;
@@ -37,11 +37,11 @@ public class Hello extends Workflow<WorkflowData> {
     @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion
     private String name;
 
-    private transient ContextStore contextStore;
+    private transient ReplyChannelStore replyChannelStore;
 
     @AutoWire
-    public void setContextStore(ContextStore contextStore) {
-        this.contextStore = contextStore;
+    public void setReplyChannelStore(ReplyChannelStore replyChannelStore) {
+        this.replyChannelStore = replyChannelStore;
     }
 
     private transient EventChannelStore eventChannelStore;
@@ -60,11 +60,11 @@ public class Hello extends Workflow<WorkflowData> {
 
 
     public String getRequest() {
-        return contextStore.getContext(getData().getUUID()).getRequest();
+        return getData().getPayload();
     }
 
     public void reply(final String message) {
-        contextStore.reply(getData().getUUID(), message);
+        replyChannelStore.reply(getData().getUUID(), message);
     }
 
     @Override
