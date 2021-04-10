@@ -15,21 +15,25 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import org.copperengine.core.*;
+import de.wolfsvl.copper2go.workflowapi.ReplyChannel;
+import de.wolfsvl.copper2go.workflowapi.ReplyChannelStore;
+import de.wolfsvl.copper2go.workflowapi.WorkflowData;
+import org.copperengine.core.AutoWire;
+import org.copperengine.core.Interrupt;
+import org.copperengine.core.Workflow;
+import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.wolfsvl.copper2go.workflowapi.ContextStore;
-import de.wolfsvl.copper2go.workflowapi.WorkflowData;
 
 @WorkflowDescription(alias = "Hello", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
 public class Hello extends Workflow<WorkflowData> {
     private static final Logger logger = LoggerFactory.getLogger(Hello.class);
 
-    private transient ContextStore contextStore;
+    private transient ReplyChannelStore replyChannelStore;
 
     @AutoWire
-    public void setContextStore(ContextStore contextStore) {
-        this.contextStore = contextStore;
+    public void setReplyChannelStore(ReplyChannelStore replyChannelStore) {
+        this.replyChannelStore = replyChannelStore;
     }
 
     @Override
@@ -37,11 +41,11 @@ public class Hello extends Workflow<WorkflowData> {
         logger.info("begin workflow 1.0");
         //LockSupport.parkNanos(3000000000L);
         //wait(WaitMode.ALL,1000, "CORR" );
-        contextStore.reply(getData().getUUID(), createResponse());
+        replyChannelStore.reply(getData().getUUID(), createResponse());
         logger.info("finish workflow 1.0");
     }
     private String createResponse() {
-        String request = contextStore.getContext(getData().getUUID()).getRequest();
+        String request = getData().getPayload();
         return "HEllo " + request + "! (Fix the bug;-)";
     }
 }
