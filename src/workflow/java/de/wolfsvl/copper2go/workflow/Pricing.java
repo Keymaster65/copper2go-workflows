@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Wolf Sluyterman van Langeweyde
+ * Copyright 2019 Wolf Sluyterman van Langeweyde
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WorkflowDescription(alias = "Hello", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
-public class Hello extends Workflow<WorkflowData> {
-    private static final Logger logger = LoggerFactory.getLogger(Hello.class);
-    private static final long serialVersionUID = 1;
+@WorkflowDescription(alias = "Pricing", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
+public class Pricing extends Workflow<WorkflowData> {
+    private static final Logger logger = LoggerFactory.getLogger(Pricing.class);
+    private static final long serialVersionUID = 1L;
 
     private transient ReplyChannelStore replyChannelStore;
 
@@ -39,11 +39,7 @@ public class Hello extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
-        replyChannelStore.reply(getData().getUUID(), createResponse());
+        replyChannelStore.reply(getData().getUUID(), "60");
         logger.info("finish workflow 1.0");
-    }
-    private String createResponse() {
-        String request = getData().getPayload();
-        return "HEllo " + request + "! (Fix the bug;-)";
     }
 }
