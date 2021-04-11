@@ -39,7 +39,7 @@ public class Pricing extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
-        replyChannelStore.reply(getData().getUUID(), "60");
+        replyChannelStore.reply(getData().getUUID(), "600");
         logger.info("finish workflow 1.0");
     }
 }
