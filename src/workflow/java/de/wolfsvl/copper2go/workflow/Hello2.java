@@ -89,7 +89,7 @@ public class Hello2 extends Workflow<WorkflowData> {
                     ));
             reply(response);
         } catch (RuntimeException e) {
-            replyError("Exception: " + e.getMessage());
+            replyError(e.getClass().getSimpleName() +": " + e.getMessage());
             throw e;
         }
         logger.info("finish workflow 2.0");
