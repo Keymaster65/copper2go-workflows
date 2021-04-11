@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 @WorkflowDescription(alias = "Hello", majorVersion = 2, minorVersion = 0, patchLevelVersion = 0)
 public class Hello2 extends Workflow<WorkflowData> {
     private static final Logger logger = LoggerFactory.getLogger(Hello2.class);
-    public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 3000;
+    public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 30000;
     private static final long serialVersionUID = 2;
 
     @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion

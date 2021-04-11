@@ -39,6 +39,11 @@ public class Pricing extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         replyChannelStore.reply(getData().getUUID(), "60");
         logger.info("finish workflow 1.0");
     }
