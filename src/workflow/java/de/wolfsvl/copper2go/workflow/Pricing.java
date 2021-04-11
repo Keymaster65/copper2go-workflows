@@ -40,9 +40,9 @@ public class Pricing extends Workflow<WorkflowData> {
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
         try {
-            Thread.sleep(3000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.warn("Interrupt backend delay.", e);
         }
         replyChannelStore.reply(getData().getUUID(), "60");
         logger.info("finish workflow 1.0");

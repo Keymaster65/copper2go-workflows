@@ -67,10 +67,14 @@ public class Hello2 extends Workflow<WorkflowData> {
         replyChannelStore.reply(getData().getUUID(), message);
     }
 
+    public void replyError(final String message) {
+        replyChannelStore.replyError(getData().getUUID(), message);
+    }
+
     @Override
     public void main() throws Interrupt {
         try {
-            logger.info("begin workflow 1.0");
+            logger.info("begin workflow 2.0");
             long startMillis = System.currentTimeMillis();
             name = Mapper.mapRequest(getRequest());
             String correlationId = getEngine().createUUID();
@@ -85,10 +89,10 @@ public class Hello2 extends Workflow<WorkflowData> {
                     ));
             reply(response);
         } catch (RuntimeException e) {
-            reply("Exception: " + e.getMessage());
+            replyError("Exception: " + e.getMessage());
             throw e;
         }
-        logger.info("finish workflow 1.0");
+        logger.info("finish workflow 2.0");
     }
 
     private int getPricePerMinute(final Response<String> response) {

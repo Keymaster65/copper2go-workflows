@@ -5,6 +5,10 @@ public class Mapper {
     }
 
     public static String mapRequest(final String request) {
+        if ("".equals(request)) {
+            throw new IllegalArgumentException("A name must be specified.");
+        }
+
         final int blankPosition = request.indexOf(' ');
         if (blankPosition > 1) {
             return request.substring(0, blankPosition);
