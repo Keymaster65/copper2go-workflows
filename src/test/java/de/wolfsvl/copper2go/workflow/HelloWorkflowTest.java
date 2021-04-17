@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 
 public class HelloWorkflowTest {
 
-    public static final String WORKFLOW_DIR = "../workflow/java";
+    public static final String WORKFLOW_DIR = "src/workflow/java";
     public static final String TEST_NAME = "Wolf";
     public static final String WORKFLOW_NAME = "Hello";
     public static final String UUID = "uuid";

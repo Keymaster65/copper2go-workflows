@@ -1,6 +1,8 @@
 # tools
 .idea
 *.iml
+build
+.gradle
 
 # Compiled class file
 *.class
