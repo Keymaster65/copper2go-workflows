@@ -1,6 +1,7 @@
 package de.wolfsvl.copper2go.workflow;
 
 import io.github.keymaster65.copper2go.util.Copper2goDependencyInjector;
+import io.github.keymaster65.copper2go.util.WorkflowTestRunner;
 import io.github.keymaster65.copper2go.workflowapi.ReplyChannelStore;
 import io.github.keymaster65.copper2go.workflowapi.RequestChannelStore;
 import io.github.keymaster65.copper2go.workflowapi.WorkflowData;
@@ -10,14 +11,13 @@ import org.copperengine.core.tranzient.TransientScottyEngine;
 import org.junit.jupiter.api.Test;
 
 import static de.wolfsvl.copper2go.workflow.Hello2.PRICING_CENT_PER_MINUTE;
-import static de.wolfsvl.copper2go.workflow.WorkflowTestRunner.runTest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class HelloWorkflowTest {
+class HelloWorkflowTest {
 
     public static final String WORKFLOW_DIR = "src/workflow/java";
     public static final String TEST_NAME = "Wolf";
@@ -25,7 +25,7 @@ public class HelloWorkflowTest {
     public static final String UUID = "uuid";
 
     @Test
-    public void helloTest() throws Exception {
+    void helloTest() throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
 
         TransientScottyEngine engine = WorkflowTestRunner.createTestEngine(
@@ -36,17 +36,17 @@ public class HelloWorkflowTest {
                         null
                 )
         );
-        runTest(
+        WorkflowTestRunner.runTest(
                 new WorkflowData(UUID, TEST_NAME),
                 new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, 1L, 0L),
                 engine
         );
 
-        verify(replyChannelStoreMock).reply(eq(UUID), eq("HEllo " + TEST_NAME + "! (Fix the bug;-)"));
+        verify(replyChannelStoreMock).reply(UUID, "HEllo " + TEST_NAME + "! (Fix the bug;-)");
     }
 
     @Test
-    public void hello2Test() throws Exception {
+    void hello2Test() throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
 
@@ -65,13 +65,13 @@ public class HelloWorkflowTest {
             return null;
         }).when(requestChannelStoreMock).request(eq(PRICING_CENT_PER_MINUTE), eq(TEST_NAME), any());
 
-        runTest(
+        WorkflowTestRunner.runTest(
                 new WorkflowData(UUID, TEST_NAME),
                 new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, 2L, 0L),
                 engine
         );
 
-        verify(replyChannelStoreMock).reply(eq(UUID), eq("Hello " + TEST_NAME +"! Please transfer 0 cent"));
+        verify(replyChannelStoreMock).reply(UUID, "Hello " + TEST_NAME +"! Please transfer 0 cent");
     }
 }
 
