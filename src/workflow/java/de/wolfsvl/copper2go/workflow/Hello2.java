@@ -15,10 +15,10 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import de.wolfsvl.copper2go.workflowapi.ReplyChannelStore;
-import de.wolfsvl.copper2go.workflowapi.EventChannelStore;
-import de.wolfsvl.copper2go.workflowapi.RequestChannelStore;
-import de.wolfsvl.copper2go.workflowapi.WorkflowData;
+import io.github.keymaster65.copper2go.workflowapi.ReplyChannelStore;
+import io.github.keymaster65.copper2go.workflowapi.EventChannelStore;
+import io.github.keymaster65.copper2go.workflowapi.RequestChannelStore;
+import io.github.keymaster65.copper2go.workflowapi.WorkflowData;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
 import org.copperengine.core.Response;
@@ -33,6 +33,7 @@ public class Hello2 extends Workflow<WorkflowData> {
     private static final Logger logger = LoggerFactory.getLogger(Hello2.class);
     public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 30000;
     private static final long serialVersionUID = 2;
+    public static final String PRICING_CENT_PER_MINUTE = "Pricing.centPerMinute";
 
     @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion
     private String name;
@@ -109,7 +110,7 @@ public class Hello2 extends Workflow<WorkflowData> {
 
 
     private void callCentPerMinute(final String pricingRequest, final String correlationId) throws Interrupt {
-        requestChannelStore.request("Pricing.centPerMinute", pricingRequest, correlationId);
+        requestChannelStore.request(PRICING_CENT_PER_MINUTE, pricingRequest, correlationId);
         wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationId);
     }
 
