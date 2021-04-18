@@ -1,5 +1,6 @@
 plugins {
     java
+    id("com.github.hierynomus.license-base") version "0.15.0"
 }
 
 sourceSets {
@@ -9,6 +10,13 @@ sourceSets {
 }
 repositories {
     mavenCentral()
+}
+
+apply(plugin="com.github.hierynomus.license")
+license {
+    ignoreFailures=false
+    header=File("$rootDir/licenceHeader.txt")
+    skipExistingHeaders=false
 }
 
 dependencies {
