@@ -1,5 +1,6 @@
 plugins {
     java
+    jacoco
     id("com.github.hierynomus.license-base") version "0.15.0"
 }
 
