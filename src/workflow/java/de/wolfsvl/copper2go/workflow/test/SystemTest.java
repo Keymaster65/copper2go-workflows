@@ -75,26 +75,26 @@ public class SystemTest extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         try {
-            logger.info("begin workflow 1.0");
+            logger.info("Begin workflow {} 1.0.", this.getClass().getSimpleName());
 
             final Properties payloadProperties = Mapper.mapRequest(getRequest());
             if (payloadProperties.getProperty(Mapper.REPLY_UUID) != null) {
                 reply(payloadProperties.getProperty(Mapper.REPLY_UUID), payloadProperties.toString());
             } else {
-                callSystemTest(Mapper.mapSystemTest(payloadProperties, getData().getUUID()));
+                callSystemTestRequestChannel(Mapper.mapSystemTest(payloadProperties, getData().getUUID()));
             }
         } catch (Exception e) {
             replyError(e.getClass().getSimpleName() + ": " + e.getMessage());
             throw new WorkflowRuntimeException("Could not process request: " + getRequest(), e);
         }
-        logger.info("finish workflow 1.0");
+        logger.info("Finish workflow {} 1.0.", this.getClass().getSimpleName());
     }
 
-    private void callSystemTest(final Properties inputProperties) throws IOException, Interrupt {
+    private void callSystemTestRequestChannel(final Properties inputProperties) throws IOException, Interrupt {
         String correlationId = getEngine().createUUID();
         var propertiesStream = new ByteArrayOutputStream();
         inputProperties.store(propertiesStream, "generated in workflow");
-        requestChannelStore.request("SystemTest", propertiesStream.toString(StandardCharsets.ISO_8859_1), correlationId);
+        requestChannelStore.request("SystemTestRequestChannel", propertiesStream.toString(StandardCharsets.ISO_8859_1), correlationId);
         wait(WaitMode.FIRST, 3000, correlationId);
         Response<String> response = getAndRemoveResponse(correlationId);
         if (response == null) {
