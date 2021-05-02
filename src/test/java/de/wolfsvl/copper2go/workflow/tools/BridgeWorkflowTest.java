@@ -51,7 +51,7 @@ class BridgeWorkflowTest {
         runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock,
                 "Hello", "0", null);
 
-        verify(replyChannelStoreMock, times(1)).reply(any(), contains("Hello"));
+        verify(replyChannelStoreMock, times(1)).reply(any(), eq("Hello"));
         verify(requestChannelStoreMock, times(1)).request(any(),eq("Hello"), any());
     }
 

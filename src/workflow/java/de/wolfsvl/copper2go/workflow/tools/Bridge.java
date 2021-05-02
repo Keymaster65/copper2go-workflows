@@ -61,7 +61,7 @@ public class Bridge extends Workflow<WorkflowData> {
     }
 
     private String createResponse() {
-        return "<html><body><pre>" + getData().getPayload() + "</html></body></pre>";
+        return getData().getPayload();
     }
 
     private void callRequestChannel(final String payload) throws Interrupt {
