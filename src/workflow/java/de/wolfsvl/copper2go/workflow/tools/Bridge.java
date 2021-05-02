@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow.test;
+package de.wolfsvl.copper2go.workflow.tools;
 
 import de.wolfsvl.copper2go.workflow.WorkflowRuntimeException;
 import io.github.keymaster65.copper2go.workflowapi.ReplyChannelStore;
@@ -28,14 +28,10 @@ import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
-
-@WorkflowDescription(alias = "SystemTest", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
-public class SystemTest extends Workflow<WorkflowData> {
-    private static final Logger logger = LoggerFactory.getLogger(SystemTest.class);
+@WorkflowDescription(alias = "Bridge", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
+public class Bridge extends Workflow<WorkflowData> {
+    private static final Logger logger = LoggerFactory.getLogger(Bridge.class);
+    private static final long serialVersionUID = 1;
 
     private transient ReplyChannelStore replyChannelStore;
 
@@ -51,51 +47,35 @@ public class SystemTest extends Workflow<WorkflowData> {
         this.requestChannelStore = requestChannelStore;
     }
 
-
-    public String getRequest() {
-        return getData().getPayload();
-    }
-
-    public void reply(final String uuid, final String message) {
-        replyChannelStore.reply(uuid, message);
-    }
-
-    public void replyError(final String message) {
-        replyChannelStore.replyError(getData().getUUID(), message);
-    }
-
     @Override
     public void main() throws Interrupt {
         try {
             logger.info("Begin workflow {} 1.0.", this.getClass().getSimpleName());
-
-            final Properties payloadProperties = Mapper.mapRequest(getRequest());
-            if (payloadProperties.getProperty(Mapper.REPLY_UUID) != null) {
-                reply(payloadProperties.getProperty(Mapper.REPLY_UUID), payloadProperties.toString());
-            } else {
-                callSystemTestRequestChannel(Mapper.mapSystemTest(payloadProperties, getData().getUUID()));
-            }
+            callRequestChannel(getData().getPayload());
+            replyChannelStore.reply(getData().getUUID(), createResponse());
         } catch (Exception e) {
-            replyError(e.getClass().getSimpleName() + ": " + e.getMessage());
-            throw new WorkflowRuntimeException("Could not process request: " + getRequest(), e);
+            replyChannelStore.replyError(getData().getUUID(),e.getClass().getSimpleName() + ": " + e.getMessage());
+            throw new WorkflowRuntimeException("Could not process request: " + getData().getPayload(), e);
         }
         logger.info("Finish workflow {} 1.0.", this.getClass().getSimpleName());
     }
 
-    private void callSystemTestRequestChannel(final Properties inputProperties) throws IOException, Interrupt {
+    private String createResponse() {
+        return "<html><body><pre>" + getData().getPayload() + "</html></body></pre>";
+    }
+
+    private void callRequestChannel(final String payload) throws Interrupt {
         String correlationId = getEngine().createUUID();
-        var propertiesStream = new ByteArrayOutputStream();
-        inputProperties.store(propertiesStream, "generated in workflow");
-        requestChannelStore.request("SystemTestRequestChannel", propertiesStream.toString(StandardCharsets.ISO_8859_1), correlationId);
+        requestChannelStore.request("RequestChannel", payload, correlationId);
         wait(WaitMode.FIRST, 3000, correlationId);
         Response<String> response = getAndRemoveResponse(correlationId);
         if (response == null) {
-            throw new WorkflowRuntimeException("Response is null, could not call SystemTest.");
+            throw new WorkflowRuntimeException("Response is null, could not call RequestChannel.");
         }
         if (response.isTimeout()) {
-            throw new WorkflowRuntimeException("Timeout, could call SystemTest.");
+            throw new WorkflowRuntimeException("Timeout, could call RequestChannel.");
         } else if (null != response.getException()) {
-            throw new WorkflowRuntimeException("Could call SystemTest.", response.getException());
+            throw new WorkflowRuntimeException("Could call RequestChannel.", response.getException());
         }
     }
 }
