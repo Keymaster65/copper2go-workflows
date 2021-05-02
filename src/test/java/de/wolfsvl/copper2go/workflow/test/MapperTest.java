@@ -36,7 +36,10 @@ class MapperTest {
     void mapSystemTest() {
         Properties input = new Properties();
         input.setProperty("a", "A");
+
         Properties result = Mapper.mapSystemTest(input, "uuid");
+
+        Assertions.assertThat(result.size()).isEqualTo(2);
         Assertions.assertThat(result.getProperty("a")).isEqualTo("A");
         Assertions.assertThat(result.getProperty(Mapper.REPLY_UUID)).isEqualTo("uuid");
     }
