@@ -1,7 +1,12 @@
 plugins {
     java
     jacoco
-    id("com.github.hierynomus.license-base") version "0.15.0"
+    id("com.github.hierynomus.license-base") version "0.16.1"
+}
+
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 sourceSets {
