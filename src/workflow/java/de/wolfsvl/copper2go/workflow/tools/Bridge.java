@@ -28,6 +28,8 @@ import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 @WorkflowDescription(alias = "Bridge", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
 public class Bridge extends Workflow<WorkflowData> {
     private static final Logger logger = LoggerFactory.getLogger(Bridge.class);
@@ -51,22 +53,18 @@ public class Bridge extends Workflow<WorkflowData> {
     public void main() throws Interrupt {
         try {
             logger.info("Begin workflow {} 1.0.", this.getClass().getSimpleName());
-            callRequestChannel(getData().getPayload());
-            replyChannelStore.reply(getData().getUUID(), createResponse());
+            final String response = callRequestChannel(getData().getPayload(), getData().getAttributes());
+            replyChannelStore.reply(getData().getUUID(), response);
         } catch (Exception e) {
             replyChannelStore.replyError(getData().getUUID(),e.getClass().getSimpleName() + ": " + e.getMessage());
-            throw new WorkflowRuntimeException("Could not process request: " + getData().getPayload(), e);
+            throw new WorkflowRuntimeException("Could not process payload: " + getData().getPayload(), e);
         }
         logger.info("Finish workflow {} 1.0.", this.getClass().getSimpleName());
     }
 
-    private String createResponse() {
-        return getData().getPayload();
-    }
-
-    private void callRequestChannel(final String payload) throws Interrupt {
+    private String callRequestChannel(final String payload, final Map<String, String> attributes) throws Interrupt {
         String correlationId = getEngine().createUUID();
-        requestChannelStore.request("RequestChannel", payload, correlationId);
+        requestChannelStore.request("RequestChannel", payload, attributes, correlationId);
         wait(WaitMode.FIRST, 3000, correlationId);
         Response<String> response = getAndRemoveResponse(correlationId);
         if (response == null) {
@@ -77,5 +75,6 @@ public class Bridge extends Workflow<WorkflowData> {
         } else if (null != response.getException()) {
             throw new WorkflowRuntimeException("Could call RequestChannel.", response.getException());
         }
+        return response.getResponse();
     }
 }

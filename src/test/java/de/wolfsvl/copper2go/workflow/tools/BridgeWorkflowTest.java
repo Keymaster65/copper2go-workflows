@@ -27,11 +27,11 @@ import org.copperengine.core.CopperException;
 import org.copperengine.core.Response;
 import org.copperengine.core.tranzient.TransientScottyEngine;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,11 +48,20 @@ class BridgeWorkflowTest {
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
         final EventChannelStore eventChannelStoreMock = mock(EventChannelStore.class);
 
-        runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock,
-                "Hello", "0", null);
+        final Map<String, String> attributes = new HashMap<>();
+        attributes.put("key", "value");
+        runWorkflow(
+                replyChannelStoreMock,
+                requestChannelStoreMock,
+                eventChannelStoreMock,
+                "Hello",
+                attributes,
+                "Response",
+                null
+        );
 
-        verify(replyChannelStoreMock, times(1)).reply(any(), eq("Hello"));
-        verify(requestChannelStoreMock, times(1)).request(any(),eq("Hello"), any());
+        verify(requestChannelStoreMock).request(Mockito.any(),Mockito.eq("Hello"), Mockito.eq(attributes), Mockito.any());
+        verify(replyChannelStoreMock).reply(Mockito.any(), Mockito.eq("Response"));
     }
 
     @Test
@@ -61,12 +70,19 @@ class BridgeWorkflowTest {
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
         final EventChannelStore eventChannelStoreMock = mock(EventChannelStore.class);
 
-        runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock,
-                "Hello", null, new IllegalArgumentException("Test"));
+        runWorkflow(
+                replyChannelStoreMock,
+                requestChannelStoreMock,
+                eventChannelStoreMock,
+                "Hello",
+                null,
+                null,
+                new IllegalArgumentException("Test")
+        );
 
-        verify(replyChannelStoreMock, times(0)).reply(any(), any());
-        verify(replyChannelStoreMock, times(1)).replyError(any(), eq("WorkflowRuntimeException: Could call RequestChannel."));
-        verify(requestChannelStoreMock, times(1)).request(any(),eq("Hello"), any());
+        verify(requestChannelStoreMock).request(Mockito.any(),Mockito.eq("Hello"), Mockito.any(), Mockito.any());
+        verify(replyChannelStoreMock, times(0)).reply(Mockito.any(), Mockito.any());
+        verify(replyChannelStoreMock).replyError(Mockito.any(), Mockito.eq("WorkflowRuntimeException: Could call RequestChannel."));
     }
 
     private void runWorkflow(
@@ -74,6 +90,7 @@ class BridgeWorkflowTest {
             final RequestChannelStore requestChannelStoreMock,
             final EventChannelStore eventChannelStoreMock,
             final String payload,
+            final Map<String,String> attributes,
             final String response,
             Exception exception
     ) throws CopperException {
@@ -86,15 +103,15 @@ class BridgeWorkflowTest {
                 )
         );
 
-        doAnswer(invocation -> {
-            String responseRorrelationId = invocation.getArgument(2);
+        Mockito.doAnswer(invocation -> {
+            String responseRorrelationId = invocation.getArgument(3);
             Response<String> copperResponse = new Response<>(responseRorrelationId, response, exception);
             engine.notify(copperResponse, new Acknowledge.BestEffortAcknowledge());
             return null;
-        }).when(requestChannelStoreMock).request(eq("RequestChannel"), eq(payload), any());
+        }).when(requestChannelStoreMock).request(Mockito.eq("RequestChannel"), Mockito.eq(payload), Mockito.any(), Mockito.any());
 
         WorkflowTestRunner.runTest(
-                new WorkflowData(UUID, payload),
+                new WorkflowData(UUID, payload, attributes),
                 new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, 1L, 0L),
                 engine
         );
