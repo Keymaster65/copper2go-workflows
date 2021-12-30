@@ -26,7 +26,7 @@ license {
 }
 
 dependencies {
-    implementation("io.github.keymaster65:copper2go-api:2+")
+    implementation("io.github.keymaster65:copper2go-api:3+")
     implementation("org.copper-engine:copper-coreengine:5+")
 
     testImplementation("org.assertj:assertj-assertions-generator:2+")

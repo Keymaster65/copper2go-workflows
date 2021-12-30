@@ -15,11 +15,11 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import io.github.keymaster65.copper2go.util.Copper2goDependencyInjector;
-import io.github.keymaster65.copper2go.util.WorkflowTestRunner;
-import io.github.keymaster65.copper2go.workflowapi.ReplyChannelStore;
-import io.github.keymaster65.copper2go.workflowapi.RequestChannelStore;
-import io.github.keymaster65.copper2go.workflowapi.WorkflowData;
+import io.github.keymaster65.copper2go.api.util.Copper2goDependencyInjector;
+import io.github.keymaster65.copper2go.api.util.WorkflowTestRunner;
+import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
+import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
+import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.Acknowledge;
 import org.copperengine.core.Response;
 import org.copperengine.core.tranzient.TransientScottyEngine;

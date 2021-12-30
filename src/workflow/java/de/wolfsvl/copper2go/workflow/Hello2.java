@@ -15,10 +15,10 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import io.github.keymaster65.copper2go.workflowapi.ReplyChannelStore;
-import io.github.keymaster65.copper2go.workflowapi.EventChannelStore;
-import io.github.keymaster65.copper2go.workflowapi.RequestChannelStore;
-import io.github.keymaster65.copper2go.workflowapi.WorkflowData;
+import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
+import io.github.keymaster65.copper2go.api.workflow.EventChannelStore;
+import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
+import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
 import org.copperengine.core.Response;
@@ -28,12 +28,17 @@ import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
+
 @WorkflowDescription(alias = "Hello", majorVersion = 2, minorVersion = 0, patchLevelVersion = 0)
 public class Hello2 extends Workflow<WorkflowData> {
-    private static final Logger logger = LoggerFactory.getLogger(Hello2.class);
-    public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 30000;
+    @Serial
     private static final long serialVersionUID = 2;
+
+    public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 30000;
     public static final String PRICING_CENT_PER_MINUTE = "Pricing.centPerMinute";
+
+    private static final Logger logger = LoggerFactory.getLogger(Hello2.class);
 
     @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion
     private String name;

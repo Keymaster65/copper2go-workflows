@@ -15,8 +15,8 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-import io.github.keymaster65.copper2go.workflowapi.ReplyChannelStore;
-import io.github.keymaster65.copper2go.workflowapi.WorkflowData;
+import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
+import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.AutoWire;
 import org.copperengine.core.Interrupt;
 import org.copperengine.core.Workflow;
@@ -24,10 +24,15 @@ import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
+
 @WorkflowDescription(alias = "Pricing", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
 public class Pricing extends Workflow<WorkflowData> {
-    private static final Logger logger = LoggerFactory.getLogger(Pricing.class);
+
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(Pricing.class);
 
     private transient ReplyChannelStore replyChannelStore;
 
