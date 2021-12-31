@@ -57,11 +57,15 @@ public class SystemTest extends Workflow<WorkflowData> {
     }
 
     public void reply(final String uuid, final String message) {
-        replyChannelStore.reply(uuid, message);
+        if (uuid != null) {
+            replyChannelStore.reply(uuid, message);
+        }
     }
 
     public void replyError(final String message) {
-        replyChannelStore.replyError(getData().getUUID(), message);
+        if (getData().getUUID() != null) {
+            replyChannelStore.replyError(getData().getUUID(), message);
+        }
     }
 
     @Override

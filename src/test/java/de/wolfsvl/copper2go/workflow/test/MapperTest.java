@@ -58,4 +58,16 @@ class MapperTest {
         Assertions.assertThat(result.getProperty("a")).isEqualTo("A");
         Assertions.assertThat(result.getProperty(Mapper.REPLY_UUID)).isEqualTo("uuid");
     }
+
+    @Test
+    void mapSystemTestNull() {
+        Properties input = new Properties();
+        input.setProperty("a", "A");
+
+        Properties result = Mapper.mapSystemTest(input, null);
+
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.getProperty("a")).isEqualTo("A");
+        Assertions.assertThat(result.getProperty(Mapper.REPLY_UUID)).isNull();
+    }
 }

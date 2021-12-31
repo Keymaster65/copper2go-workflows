@@ -35,7 +35,9 @@ public class Mapper {
     public static Properties mapSystemTest(final Properties payloadProperties, final String initialUuid) {
         var systemTestProperties = new Properties();
         systemTestProperties.putAll(payloadProperties);
-        systemTestProperties.put(REPLY_UUID, initialUuid);
+        if (initialUuid != null) {
+            systemTestProperties.put(REPLY_UUID, initialUuid);
+        }
         return systemTestProperties;
     }
 }

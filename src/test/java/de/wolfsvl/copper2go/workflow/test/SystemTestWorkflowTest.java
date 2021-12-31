@@ -25,6 +25,9 @@ import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.CopperException;
 import org.copperengine.core.tranzient.TransientScottyEngine;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static de.wolfsvl.copper2go.workflow.test.Mapper.REPLY_UUID;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,35 +39,41 @@ class SystemTestWorkflowTest {
 
     public static final String WORKFLOW_DIR = "src/workflow/java";
     public static final String WORKFLOW_NAME = "SystemTest";
-    public static final String UUID = "uuid";
 
-    @Test
-    void noReplyTest() throws Exception {
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"uuid"})
+    void noReplyTest(final String uuid) throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
         final EventChannelStore eventChannelStoreMock = mock(EventChannelStore.class);
 
-        runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock, "");
+        runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock, uuid, "");
 
         verify(replyChannelStoreMock, times(0)).reply(any(), any());
         verify(requestChannelStoreMock, times(1)).request(any(), any(), any());
     }
 
-    @Test
-    void replyTest() throws Exception {
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"uuid"})
+    void replyTest(final String uuid) throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
         final EventChannelStore eventChannelStoreMock = mock(EventChannelStore.class);
 
-        runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock, REPLY_UUID + "=uuid0");
+        runWorkflow(replyChannelStoreMock, requestChannelStoreMock, eventChannelStoreMock, uuid, REPLY_UUID + "=uuid0");
 
         verify(replyChannelStoreMock, times(1)).reply(any(), any());
         verify(requestChannelStoreMock, times(0)).request(any(), any(), any());
     }
+
     private void runWorkflow(
             final ReplyChannelStore replyChannelStoreMock,
             final RequestChannelStore requestChannelStoreMock,
-            final EventChannelStore eventChannelStoreMock, final String payload
+            final EventChannelStore eventChannelStoreMock,
+            final String uuid,
+            final String payload
     ) throws CopperException {
         TransientScottyEngine engine = WorkflowTestRunner.createTestEngine(
                 WORKFLOW_DIR,
@@ -75,7 +84,7 @@ class SystemTestWorkflowTest {
                 )
         );
         WorkflowTestRunner.runTest(
-                new WorkflowData(UUID, payload),
+                new WorkflowData(uuid, payload),
                 new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, 1L, 0L),
                 engine
         );
