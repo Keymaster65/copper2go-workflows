@@ -16,7 +16,6 @@
 package de.wolfsvl.copper2go.workflow;
 
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
-import io.github.keymaster65.copper2go.api.workflow.EventChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.AutoWire;
@@ -29,80 +28,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
+import java.util.concurrent.atomic.AtomicReference;
 
 @WorkflowDescription(alias = "Hello", majorVersion = 2, minorVersion = 0, patchLevelVersion = 0)
 public class Hello2 extends Workflow<WorkflowData> {
-    @Serial
-    private static final long serialVersionUID = 2;
 
-    public static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 30000;
-    public static final String PRICING_CENT_PER_MINUTE = "Pricing.centPerMinute";
+    public static final String PRICING_CENT_PER_MINUTE_CHANNEL = "Pricing.centPerMinute";
+
+    private static final int PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC = 30000;
+
+    @Serial
+    private static final long serialVersionUID = 3;
 
     private static final Logger logger = LoggerFactory.getLogger(Hello2.class);
 
-    @SuppressWarnings("FieldCanBeLocal") // need it as example anf starting point of technical discussion
-    private String name;
+    private final AtomicReference<String> nameRef = new AtomicReference<>();
 
     private transient ReplyChannelStore replyChannelStore;
 
-    @AutoWire
-    public void setReplyChannelStore(ReplyChannelStore replyChannelStore) {
-        this.replyChannelStore = replyChannelStore;
-    }
-
-    @SuppressWarnings("unused")
-    private transient EventChannelStore eventChannelStore;
-
-    @AutoWire
-    public void setEventChannelStore(EventChannelStore eventChannelStore) {
-        this.eventChannelStore = eventChannelStore;
-    }
-
     private transient RequestChannelStore requestChannelStore;
-
-    @AutoWire
-    public void setRequestChannelStore(RequestChannelStore requestChannelStore) {
-        this.requestChannelStore = requestChannelStore;
-    }
-
-
-    public String getRequest() {
-        return getData().getPayload();
-    }
-
-    public void reply(final String message) {
-        replyChannelStore.reply(getData().getUUID(), message);
-    }
-
-    public void replyError(final String message) {
-        replyChannelStore.replyError(getData().getUUID(), message);
-    }
 
     @Override
     public void main() throws Interrupt {
         try {
-            logger.info("begin workflow 2.0");
-            long startNanos = System.nanoTime();
-            name = Mapper.mapRequest(getRequest());
-            String correlationId = getEngine().createUUID();
-            callCentPerMinute(Mapper.mapPricingRequest(name), correlationId);
+            logger.info("Begin workflow 2.0.");
+            final long startNanos = System.nanoTime();
+            final String correlationIdPricing = getEngine().createUUID();
 
-            final String response = Mapper.mapResponse(
-                    this.name,
+            logger.info("Map workflow request to workflow instance.");
+            nameRef.set(Mapper.mapRequest(getRequest()));
+
+            logger.info("Call pricing service");
+            callCentPerMinute(Mapper.mapPricingRequest(nameRef.get()), correlationIdPricing);
+
+            logger.info("Mapping pricing service response to workflow reply.");
+            final String workflowResponse = Mapper.mapResponse(
+                    nameRef.get(),
                     BusinessRules.calculatePrice(
                             startNanos,
                             System.nanoTime(),
-                            getPricePerMinute(getAndRemoveResponse(correlationId))
+                            getPricePerMinute(getAndRemoveResponse(correlationIdPricing))
                     ));
-            reply(response);
+
+            logger.info("Sending reply of workflow.");
+            reply(workflowResponse);
+
         } catch (RuntimeException e) {
-            replyError(e.getClass().getSimpleName() +": " + e.getMessage());
+
+            logger.info("Exceptional finish of workflow.");
+            replyError(e.getClass().getSimpleName() + ": " + e.getMessage());
             throw e;
+        } finally {
+            logger.info("Finish workflow.");
         }
-        logger.info("finish workflow 2.0");
     }
 
     private long getPricePerMinute(final Response<String> response) {
+        logger.info("Getting response of pricing service.");
         if (response == null) {
             throw new WorkflowRuntimeException("Response is null, could not get price.");
         }
@@ -116,9 +98,31 @@ public class Hello2 extends Workflow<WorkflowData> {
 
 
     private void callCentPerMinute(final String pricingRequest, final String correlationId) throws Interrupt {
-        requestChannelStore.request(PRICING_CENT_PER_MINUTE, pricingRequest, correlationId);
+        requestChannelStore.request(PRICING_CENT_PER_MINUTE_CHANNEL, pricingRequest, correlationId);
         wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationId);
     }
 
+    private String getRequest() {
+        return getData().getPayload();
+    }
 
+    private void reply(final String message) {
+        replyChannelStore.reply(getData().getUUID(), message);
+    }
+
+    private void replyError(final String message) {
+        replyChannelStore.replyError(getData().getUUID(), message);
+    }
+
+    @SuppressWarnings("unused")
+    @AutoWire
+    public void setReplyChannelStore(ReplyChannelStore replyChannelStore) {
+        this.replyChannelStore = replyChannelStore;
+    }
+
+    @SuppressWarnings("unused")
+    @AutoWire
+    public void setRequestChannelStore(RequestChannelStore requestChannelStore) {
+        this.requestChannelStore = requestChannelStore;
+    }
 }

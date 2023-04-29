@@ -25,7 +25,7 @@ import org.copperengine.core.Response;
 import org.copperengine.core.tranzient.TransientScottyEngine;
 import org.junit.jupiter.api.Test;
 
-import static de.wolfsvl.copper2go.workflow.Hello2.PRICING_CENT_PER_MINUTE;
+import static de.wolfsvl.copper2go.workflow.Hello2.PRICING_CENT_PER_MINUTE_CHANNEL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -78,7 +78,7 @@ class HelloWorkflowTest {
             Response<String> copperResponse = new Response<>(responseCorrelationId, "0", null);
             engine.notify(copperResponse, new Acknowledge.BestEffortAcknowledge());
             return null;
-        }).when(requestChannelStoreMock).request(eq(PRICING_CENT_PER_MINUTE), eq(TEST_NAME), any());
+        }).when(requestChannelStoreMock).request(eq(PRICING_CENT_PER_MINUTE_CHANNEL), eq(TEST_NAME), any());
 
         WorkflowTestRunner.runTest(
                 new WorkflowData(UUID, TEST_NAME),
