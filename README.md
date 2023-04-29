@@ -6,4 +6,4 @@ https://github.com/Keymaster65/copper2go
 for more information.
 
 This project is a gradle project und should work as any other gradle project.
-It was tested in IDEA 2021.1 with Java 11.
+It was tested in IDEA 2023.1.1 with Java 17.
