@@ -15,11 +15,28 @@
  */
 package de.wolfsvl.copper2go.workflow;
 
-public class BusinessRules {
-    private BusinessRules() {}
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    static double calculatePrice(final long startMillis, final long now, final int pricePerMinute) {
-        long durarionMillis = now - startMillis;
-        return pricePerMinute * ((double) durarionMillis / (60L * 1000L));
+import java.time.Duration;
+
+public class BusinessRules {
+
+    private static final Logger logger = LoggerFactory.getLogger(BusinessRules.class);
+
+    private BusinessRules() {
+    }
+
+    static double calculatePrice(
+            final long startNanos,
+            final long now,
+            final long pricePerMinute
+    ) {
+        long durarionNanos = now - startNanos;
+        logger.info("Calculate price for {} nanos.", durarionNanos);
+        return Math.round(
+                (double) pricePerMinute
+                        / Duration.ofMinutes(1).toNanos()
+                        * durarionNanos);
     }
 }

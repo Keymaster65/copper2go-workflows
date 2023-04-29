@@ -50,6 +50,7 @@ public class Hello2 extends Workflow<WorkflowData> {
         this.replyChannelStore = replyChannelStore;
     }
 
+    @SuppressWarnings("unused")
     private transient EventChannelStore eventChannelStore;
 
     @AutoWire
@@ -81,7 +82,7 @@ public class Hello2 extends Workflow<WorkflowData> {
     public void main() throws Interrupt {
         try {
             logger.info("begin workflow 2.0");
-            long startMillis = System.currentTimeMillis();
+            long startNanos = System.nanoTime();
             name = Mapper.mapRequest(getRequest());
             String correlationId = getEngine().createUUID();
             callCentPerMinute(Mapper.mapPricingRequest(name), correlationId);
@@ -89,8 +90,8 @@ public class Hello2 extends Workflow<WorkflowData> {
             final String response = Mapper.mapResponse(
                     this.name,
                     BusinessRules.calculatePrice(
-                            startMillis,
-                            System.currentTimeMillis(),
+                            startNanos,
+                            System.nanoTime(),
                             getPricePerMinute(getAndRemoveResponse(correlationId))
                     ));
             reply(response);
@@ -101,7 +102,7 @@ public class Hello2 extends Workflow<WorkflowData> {
         logger.info("finish workflow 2.0");
     }
 
-    private int getPricePerMinute(final Response<String> response) {
+    private long getPricePerMinute(final Response<String> response) {
         if (response == null) {
             throw new WorkflowRuntimeException("Response is null, could not get price.");
         }
@@ -110,7 +111,7 @@ public class Hello2 extends Workflow<WorkflowData> {
         } else if (null != response.getException()) {
             throw new WorkflowRuntimeException("Could not get price.", response.getException());
         }
-        return Integer.parseInt(response.getResponse());
+        return Long.parseLong(response.getResponse());
     }
 
 

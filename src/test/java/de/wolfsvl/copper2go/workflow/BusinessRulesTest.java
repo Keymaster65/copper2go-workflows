@@ -17,14 +17,32 @@ package de.wolfsvl.copper2go.workflow;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BusinessRulesTest {
 
     @Test
-    void calculatePriceTest() {
-        assertThat(BusinessRules.calculatePrice(1000L, 2000L, 60)).isEqualTo(1);
-        assertThat(BusinessRules.calculatePrice(0, 60000L, 60)).isEqualTo(60);
+    void givenOneSecond_whenCalculatePriceWith60CentPerMinute_thenCalculatePriceIsOne() {
+        assertThat(
+                BusinessRules.calculatePrice(
+                        Duration.ofSeconds(1).toNanos(),
+                        Duration.ofSeconds(2).toNanos(),
+                        60
+                )
+        ).isEqualTo(1);
+    }
+
+    @Test
+    void givenOneMinute_whenCalculatePriceWith60CentPerMinute_thenCalculatePriceIs60() {
+        assertThat(
+                BusinessRules.calculatePrice(
+                        Duration.ofSeconds(0).toNanos(),
+                        Duration.ofSeconds(60).toNanos(),
+                        60
+                )
+        ).isEqualTo(60);
     }
 
 }

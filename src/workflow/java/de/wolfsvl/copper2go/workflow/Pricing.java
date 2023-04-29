@@ -25,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
+import java.time.Duration;
 
+@SuppressWarnings("unused")
 @WorkflowDescription(alias = "Pricing", majorVersion = 1, minorVersion = 0, patchLevelVersion = 0)
 public class Pricing extends Workflow<WorkflowData> {
 
@@ -44,7 +46,7 @@ public class Pricing extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         logger.info("begin workflow 1.0");
-        replyChannelStore.reply(getData().getUUID(), "600");
+        replyChannelStore.reply(getData().getUUID(), String.valueOf(Duration.ofMinutes(1).toNanos()));
         logger.info("finish workflow 1.0");
     }
 }
