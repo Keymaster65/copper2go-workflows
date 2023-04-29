@@ -24,7 +24,6 @@ import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.CopperException;
 import org.copperengine.core.tranzient.TransientScottyEngine;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
