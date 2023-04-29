@@ -74,8 +74,8 @@ class HelloWorkflowTest {
                 )
         );
         doAnswer(invocation -> {
-            String responseRorrelationId = invocation.getArgument(2);
-            Response<String> copperResponse = new Response<>(responseRorrelationId, "0", null);
+            String responseCorrelationId = invocation.getArgument(2);
+            Response<String> copperResponse = new Response<>(responseCorrelationId, "0", null);
             engine.notify(copperResponse, new Acknowledge.BestEffortAcknowledge());
             return null;
         }).when(requestChannelStoreMock).request(eq(PRICING_CENT_PER_MINUTE), eq(TEST_NAME), any());
