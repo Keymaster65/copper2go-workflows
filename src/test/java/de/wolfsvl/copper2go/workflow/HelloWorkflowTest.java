@@ -24,8 +24,9 @@ import org.copperengine.core.Acknowledge;
 import org.copperengine.core.Response;
 import org.copperengine.core.tranzient.TransientScottyEngine;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static de.wolfsvl.copper2go.workflow.Hello2.PRICING_CENT_PER_MINUTE_CHANNEL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.verify;
 
 class HelloWorkflowTest {
 
+    public static final String PRICING_CENT_PER_MINUTE_CHANNEL = "Pricing.centPerMinute";
     public static final String WORKFLOW_DIR = "src/workflow/java";
     public static final String TEST_NAME = "Wolf";
     public static final String WORKFLOW_NAME = "Hello";
@@ -59,9 +61,9 @@ class HelloWorkflowTest {
 
         verify(replyChannelStoreMock).reply(UUID, "HEllo " + TEST_NAME + "! (Fix the bug;-)");
     }
-
-    @Test
-    void hello2Test() throws Exception {
+    @ParameterizedTest
+    @ValueSource(longs = {2,3})
+    void helloTest(final long majorVersion) throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
 
@@ -82,7 +84,7 @@ class HelloWorkflowTest {
 
         WorkflowTestRunner.runTest(
                 new WorkflowData(UUID, TEST_NAME),
-                new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, 2L, 0L),
+                new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, majorVersion, 0L),
                 engine
         );
 
