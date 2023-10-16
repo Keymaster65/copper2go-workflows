@@ -6,7 +6,12 @@ plugins {
 
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 sourceSets {
@@ -27,7 +32,7 @@ license {
 
 dependencies {
     implementation("io.github.keymaster65:copper2go-api:3+")
-    implementation("org.copper-engine:copper-coreengine:5+")
+    implementation("org.copper-engine:copper-coreengine:5.4.2") // needed for Java 21
 
     testImplementation("org.assertj:assertj-assertions-generator:2+")
     testImplementation("org.junit.jupiter:junit-jupiter:5+")
