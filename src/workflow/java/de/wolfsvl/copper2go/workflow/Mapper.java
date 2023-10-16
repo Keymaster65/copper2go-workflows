@@ -20,7 +20,7 @@ public class Mapper {
     }
 
     public static String mapRequest(final String request) {
-        if ("".equals(request)) {
+        if (null == request || "".equals(request)) {
             throw new IllegalArgumentException("A name must be specified.");
         }
 
