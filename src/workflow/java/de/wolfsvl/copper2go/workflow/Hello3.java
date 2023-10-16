@@ -59,7 +59,7 @@ public class Hello3 extends Workflow<WorkflowData> {
             nameRef.set(Mapper.mapRequest(getRequest()));
 
             logger.info("Call pricing service");
-            callCentPerMinute(Mapper.mapPricingRequest(nameRef.get()), correlationIdPricing);
+            final long pricePerMinute = getPricePerMinute(Mapper.mapPricingRequest(nameRef.get()), correlationIdPricing);
 
             logger.info("Mapping pricing service response to workflow reply.");
             final String workflowResponse = Mapper.mapResponse(
@@ -67,8 +67,9 @@ public class Hello3 extends Workflow<WorkflowData> {
                     BusinessRules.calculatePrice(
                             startNanos,
                             System.nanoTime(),
-                            getPricePerMinute(getAndRemoveResponse(correlationIdPricing))
-                    ));
+                            pricePerMinute
+                    )
+            );
 
             logger.info("Sending reply of workflow.");
             reply(workflowResponse);
@@ -81,6 +82,12 @@ public class Hello3 extends Workflow<WorkflowData> {
         } finally {
             logger.info("Finish workflow.");
         }
+    }
+
+    private long getPricePerMinute(final String pricingRequest, final String correlationIdPricing) throws Interrupt {
+        requestChannelStore.request(PRICING_CENT_PER_MINUTE_CHANNEL, pricingRequest, correlationIdPricing);
+        wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationIdPricing);
+        return getPricePerMinute(getAndRemoveResponse(correlationIdPricing));
     }
 
     private long getPricePerMinute(final Response<String> response) {
@@ -96,11 +103,6 @@ public class Hello3 extends Workflow<WorkflowData> {
         return Long.parseLong(response.getResponse());
     }
 
-
-    private void callCentPerMinute(final String pricingRequest, final String correlationId) throws Interrupt {
-        requestChannelStore.request(PRICING_CENT_PER_MINUTE_CHANNEL, pricingRequest, correlationId);
-        wait(WaitMode.FIRST, PRICING_HELLO_PERMINUTE_TIMEOUT_MSEC, correlationId);
-    }
 
     private String getRequest() {
         return getData().getPayload();
