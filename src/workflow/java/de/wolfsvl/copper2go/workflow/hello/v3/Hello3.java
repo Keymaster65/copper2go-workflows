@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow.hello.deprecated;
+package de.wolfsvl.copper2go.workflow.hello.v3;
 
 import de.wolfsvl.copper2go.workflow.WorkflowRuntimeException;
 import de.wolfsvl.copper2go.workflow.hello.BusinessRules;
+import de.wolfsvl.copper2go.workflow.hello.Mapper;
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;

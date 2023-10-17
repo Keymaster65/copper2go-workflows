@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow.test;
+package de.wolfsvl.copper2go.workflow.systemtest;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MapperTest {
 
@@ -35,7 +33,7 @@ class MapperTest {
     @Test
     void mapRequestEmpty() throws IOException {
         Properties result = Mapper.mapRequest("");
-        Assertions.assertThat(result.size()).isZero();
+        Assertions.assertThat(result).isEmpty();
     }
 
 
@@ -54,7 +52,7 @@ class MapperTest {
 
         Properties result = Mapper.mapSystemTest(input, "uuid");
 
-        Assertions.assertThat(result.size()).isEqualTo(2);
+        Assertions.assertThat(result).hasSize(2);
         Assertions.assertThat(result.getProperty("a")).isEqualTo("A");
         Assertions.assertThat(result.getProperty(Mapper.REPLY_UUID)).isEqualTo("uuid");
     }
@@ -66,7 +64,7 @@ class MapperTest {
 
         Properties result = Mapper.mapSystemTest(input, null);
 
-        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result).hasSize(1);
         Assertions.assertThat(result.getProperty("a")).isEqualTo("A");
         Assertions.assertThat(result.getProperty(Mapper.REPLY_UUID)).isNull();
     }

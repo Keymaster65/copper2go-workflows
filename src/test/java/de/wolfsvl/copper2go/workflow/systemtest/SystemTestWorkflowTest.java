@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.wolfsvl.copper2go.workflow.test;
+package de.wolfsvl.copper2go.workflow.systemtest;
 
 import io.github.keymaster65.copper2go.api.util.Copper2goDependencyInjector;
 import io.github.keymaster65.copper2go.api.util.WorkflowTestRunner;
@@ -28,7 +28,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static de.wolfsvl.copper2go.workflow.test.Mapper.REPLY_UUID;
+import static de.wolfsvl.copper2go.workflow.systemtest.Mapper.REPLY_UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

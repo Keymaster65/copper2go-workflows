@@ -15,7 +15,7 @@
  */
 package de.wolfsvl.copper2go.workflow.hello.v4;
 
-import de.wolfsvl.copper2go.workflow.hello.deprecated.Mapper;
+import de.wolfsvl.copper2go.workflow.hello.Mapper;
 import de.wolfsvl.copper2go.workflow.WorkflowRuntimeException;
 import de.wolfsvl.copper2go.workflow.hello.BusinessRules;
 import de.wolfsvl.copper2go.workflow.hello.v4.json.PersonFactory;

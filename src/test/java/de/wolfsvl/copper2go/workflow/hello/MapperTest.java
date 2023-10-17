@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow.hello.deprecated;
+package de.wolfsvl.copper2go.workflow.hello;
 
 import org.junit.jupiter.api.Test;
 

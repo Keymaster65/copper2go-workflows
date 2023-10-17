@@ -16,9 +16,9 @@ node() {
 
         stage('Test') {
             try {
-                _gradle 'test'
+                _gradle 'systemtest'
             } finally {
-                junit '**/test-results/test/*.xml'
+                junit '**/systemtest-results/systemtest/*.xml'
             }
         }
 
