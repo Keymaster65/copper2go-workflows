@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow;
+package de.wolfsvl.copper2go.workflow.pricing.v1;
 
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
 import org.copperengine.core.AutoWire;
-import org.copperengine.core.Interrupt;
 import org.copperengine.core.Workflow;
 import org.copperengine.core.WorkflowDescription;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ public class Pricing extends Workflow<WorkflowData> {
     }
 
     @Override
-    public void main() throws Interrupt {
+    public void main() {
         logger.info("begin workflow 1.0");
         replyChannelStore.reply(getData().getUUID(), String.valueOf(Duration.ofMinutes(1).toNanos()));
         logger.info("finish workflow 1.0");

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow;
+package de.wolfsvl.copper2go.workflow.hello;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +24,7 @@ public class BusinessRules {
 
     private static final Logger logger = LoggerFactory.getLogger(BusinessRules.class);
 
-    private BusinessRules() {
-    }
-
-    static double calculatePrice(
+    public static double calculatePrice(
             final long startNanos,
             final long now,
             final long pricePerMinute
@@ -38,5 +35,8 @@ public class BusinessRules {
                 (double) pricePerMinute
                         / Duration.ofMinutes(1).toNanos()
                         * durarionNanos);
+    }
+
+    private BusinessRules() {
     }
 }

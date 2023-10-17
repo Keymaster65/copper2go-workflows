@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow;
+package de.wolfsvl.copper2go.workflow.hello.deprecated;
 
+import de.wolfsvl.copper2go.workflow.WorkflowRuntimeException;
+import de.wolfsvl.copper2go.workflow.hello.BusinessRules;
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
@@ -30,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Serial;
 import java.util.concurrent.atomic.AtomicReference;
 
-@WorkflowDescription(alias = "Hello", majorVersion = 4, minorVersion = 0, patchLevelVersion = 0)
-public class Hello4 extends Workflow<WorkflowData> {
+@WorkflowDescription(alias = "Hello", majorVersion = 3, minorVersion = 0, patchLevelVersion = 0)
+public class Hello3 extends Workflow<WorkflowData> {
 
     private static final String PRICING_CENT_PER_MINUTE_CHANNEL = "Pricing.centPerMinute";
 
@@ -40,7 +42,7 @@ public class Hello4 extends Workflow<WorkflowData> {
     @Serial
     private static final long serialVersionUID = 1;
 
-    private static final Logger logger = LoggerFactory.getLogger(Hello4.class);
+    private static final Logger logger = LoggerFactory.getLogger(Hello3.class);
 
     private final AtomicReference<String> nameRef = new AtomicReference<>();
 
@@ -51,7 +53,7 @@ public class Hello4 extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         try {
-            logger.info("Begin workflow 4.0.");
+            logger.info("Begin workflow 3.0.");
             final long startNanos = System.nanoTime();
             final String correlationIdPricing = getEngine().createUUID();
 

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow;
+package de.wolfsvl.copper2go.workflow.hello.deprecated;
 
 public class Mapper {
     private Mapper() {
     }
 
     public static String mapRequest(final String request) {
-        if (null == request || "".equals(request)) {
+        if (null == request || request.isEmpty()) {
             throw new IllegalArgumentException("A name must be specified.");
         }
 

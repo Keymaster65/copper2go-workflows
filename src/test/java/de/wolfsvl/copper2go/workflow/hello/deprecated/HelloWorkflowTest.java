@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow;
+package de.wolfsvl.copper2go.workflow.hello.deprecated;
 
+import de.wolfsvl.copper2go.workflow.hello.Constants;
 import io.github.keymaster65.copper2go.api.util.Copper2goDependencyInjector;
 import io.github.keymaster65.copper2go.api.util.WorkflowTestRunner;
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
@@ -35,18 +36,12 @@ import static org.mockito.Mockito.verify;
 
 class HelloWorkflowTest {
 
-    public static final String PRICING_CENT_PER_MINUTE_CHANNEL = "Pricing.centPerMinute";
-    public static final String WORKFLOW_DIR = "src/workflow/java";
-    public static final String TEST_NAME = "Wolf";
-    public static final String WORKFLOW_NAME = "Hello";
-    public static final String UUID = "uuid";
-
     @Test
     void helloTest() throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
 
         TransientScottyEngine engine = WorkflowTestRunner.createTestEngine(
-                WORKFLOW_DIR,
+                Constants.WORKFLOW_DIR,
                 new Copper2goDependencyInjector(
                         replyChannelStoreMock,
                         null,
@@ -54,21 +49,22 @@ class HelloWorkflowTest {
                 )
         );
         WorkflowTestRunner.runTest(
-                new WorkflowData(UUID, TEST_NAME),
-                new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, 1L, 0L),
+                new WorkflowData(Constants.UUID, Constants.TEST_NAME),
+                new WorkflowTestRunner.WorkflowDefinition(Constants.WORKFLOW_NAME, 1L, 0L),
                 engine
         );
 
-        verify(replyChannelStoreMock).reply(UUID, "HEllo " + TEST_NAME + "! (Fix the bug;-)");
+        verify(replyChannelStoreMock).reply(Constants.UUID, "HEllo " + Constants.TEST_NAME + "! (Fix the bug;-)");
     }
+
     @ParameterizedTest
-    @ValueSource(longs = {2,3})
+    @ValueSource(longs = {2, 3})
     void helloTest(final long majorVersion) throws Exception {
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
 
         TransientScottyEngine engine = WorkflowTestRunner.createTestEngine(
-                WORKFLOW_DIR,
+                Constants.WORKFLOW_DIR,
                 new Copper2goDependencyInjector(
                         replyChannelStoreMock,
                         null,
@@ -80,15 +76,15 @@ class HelloWorkflowTest {
             Response<String> copperResponse = new Response<>(responseCorrelationId, "0", null);
             engine.notify(copperResponse, new Acknowledge.BestEffortAcknowledge());
             return null;
-        }).when(requestChannelStoreMock).request(eq(PRICING_CENT_PER_MINUTE_CHANNEL), eq(TEST_NAME), any());
+        }).when(requestChannelStoreMock).request(eq(Constants.PRICING_CENT_PER_MINUTE_CHANNEL), eq(Constants.TEST_NAME), any());
 
         WorkflowTestRunner.runTest(
-                new WorkflowData(UUID, TEST_NAME),
-                new WorkflowTestRunner.WorkflowDefinition(WORKFLOW_NAME, majorVersion, 0L),
+                new WorkflowData(Constants.UUID, Constants.TEST_NAME),
+                new WorkflowTestRunner.WorkflowDefinition(Constants.WORKFLOW_NAME, majorVersion, 0L),
                 engine
         );
 
-        verify(replyChannelStoreMock).reply(UUID, "Hello " + TEST_NAME +"! Please transfer 0 cent");
+        verify(replyChannelStoreMock).reply(Constants.UUID, "Hello " + Constants.TEST_NAME + "! Please transfer 0 cent");
     }
 }
 

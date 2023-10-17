@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow;
+package de.wolfsvl.copper2go.workflow.hello.v4;
 
+import de.wolfsvl.copper2go.workflow.hello.deprecated.Mapper;
+import de.wolfsvl.copper2go.workflow.WorkflowRuntimeException;
+import de.wolfsvl.copper2go.workflow.hello.BusinessRules;
+import de.wolfsvl.copper2go.workflow.hello.v4.json.PersonFactory;
+import de.wolfsvl.copper2go.workflow.hello.v4.model.Person;
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
@@ -28,10 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
-import java.util.concurrent.atomic.AtomicReference;
 
-@WorkflowDescription(alias = "Hello", majorVersion = 3, minorVersion = 0, patchLevelVersion = 0)
-public class Hello3 extends Workflow<WorkflowData> {
+@WorkflowDescription(alias = "Hello", majorVersion = 4, minorVersion = 0, patchLevelVersion = 0)
+public class Hello4 extends Workflow<WorkflowData> {
+    /**
+     * Use this serializable member to have an example to store workflow object state
+     */
+    private volatile Person person; //NOSONAR record and member are immutable
 
     private static final String PRICING_CENT_PER_MINUTE_CHANNEL = "Pricing.centPerMinute";
 
@@ -40,9 +48,7 @@ public class Hello3 extends Workflow<WorkflowData> {
     @Serial
     private static final long serialVersionUID = 1;
 
-    private static final Logger logger = LoggerFactory.getLogger(Hello3.class);
-
-    private final AtomicReference<String> nameRef = new AtomicReference<>();
+    private static final Logger logger = LoggerFactory.getLogger(Hello4.class);
 
     private transient ReplyChannelStore replyChannelStore;
 
@@ -51,19 +57,19 @@ public class Hello3 extends Workflow<WorkflowData> {
     @Override
     public void main() throws Interrupt {
         try {
-            logger.info("Begin workflow 3.0.");
+            logger.info("Begin workflow.");
             final long startNanos = System.nanoTime();
+
+            logger.info("Map workflow request to workflow instance model.");
+            person = PersonFactory.fromJson(getRequest());
+
+            logger.info("Call pricing service.");
             final String correlationIdPricing = getEngine().createUUID();
-
-            logger.info("Map workflow request to workflow instance.");
-            nameRef.set(Mapper.mapRequest(getRequest()));
-
-            logger.info("Call pricing service");
-            final long pricePerMinute = getPricePerMinute(Mapper.mapPricingRequest(nameRef.get()), correlationIdPricing);
+            final long pricePerMinute = getPricePerMinute(Mapper.mapPricingRequest(person.firstName()), correlationIdPricing);
 
             logger.info("Mapping pricing service response to workflow reply.");
             final String workflowResponse = Mapper.mapResponse(
-                    nameRef.get(),
+                    person.firstName(),
                     BusinessRules.calculatePrice(
                             startNanos,
                             System.nanoTime(),
@@ -75,7 +81,6 @@ public class Hello3 extends Workflow<WorkflowData> {
             reply(workflowResponse);
 
         } catch (RuntimeException e) {
-
             logger.info("Exceptional finish of workflow.");
             replyError(e.getClass().getSimpleName() + ": " + e.getMessage());
             throw e;
@@ -102,7 +107,6 @@ public class Hello3 extends Workflow<WorkflowData> {
         }
         return Long.parseLong(response.getResponse());
     }
-
 
     private String getRequest() {
         return getData().getPayload();
