@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.wolfsvl.copper2go.workflow.hello.v3;
+package de.wolfsvl.copper2go.workflow.hello.v1to3;
 
 import de.wolfsvl.copper2go.workflow.hello.Constants;
 import io.github.keymaster65.copper2go.api.util.Copper2goDependencyInjector;
