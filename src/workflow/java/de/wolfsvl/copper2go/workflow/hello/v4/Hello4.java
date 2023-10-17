@@ -78,11 +78,11 @@ public class Hello4 extends Workflow<WorkflowData> {
             );
 
             logger.info("Sending reply of workflow.");
-            reply(workflowResponse);
+            reply(workflowResponse + "\n");
 
         } catch (RuntimeException e) {
             logger.info("Exceptional finish of workflow.");
-            replyError(e.getClass().getSimpleName() + ": " + e.getMessage());
+            replyError(e.getClass().getSimpleName() + ": " + e.getMessage() + "\n");
             throw e;
         } finally {
             logger.info("Finish workflow.");

@@ -64,7 +64,7 @@ class Hello4WorkflowTest {
                 engine
         );
 
-        verify(replyChannelStoreMock).reply(Constants.UUID, "Hello " + Constants.TEST_NAME + "! Please transfer 0 cent");
+        verify(replyChannelStoreMock).reply(Constants.UUID, "Hello " + Constants.TEST_NAME + "! Please transfer 0 cent\n");
     }
 }
 
