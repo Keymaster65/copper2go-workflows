@@ -21,11 +21,10 @@ import io.github.keymaster65.copper2go.api.util.WorkflowTestRunner;
 import io.github.keymaster65.copper2go.api.workflow.ReplyChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.RequestChannelStore;
 import io.github.keymaster65.copper2go.api.workflow.WorkflowData;
+import net.jqwik.api.Example;
 import org.copperengine.core.Acknowledge;
 import org.copperengine.core.Response;
 import org.copperengine.core.tranzient.TransientScottyEngine;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,9 +37,9 @@ class Hello4WorkflowTest {
             {"name":"Wolf","ignored":"1"}
             """;
 
-    @ParameterizedTest
-    @ValueSource(longs = {4})
-    void hello4Test(final long majorVersion) throws Exception {
+    @Example
+    void hello4Test() throws Exception {
+        final long majorVersion = 4;
         final ReplyChannelStore replyChannelStoreMock = mock(ReplyChannelStore.class);
         final RequestChannelStore requestChannelStoreMock = mock(RequestChannelStore.class);
 

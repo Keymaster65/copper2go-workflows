@@ -23,17 +23,18 @@ repositories {
     mavenCentral()
 }
 
-apply(plugin="com.github.hierynomus.license")
+apply(plugin = "com.github.hierynomus.license")
 license {
-    ignoreFailures=false
-    header=File("$rootDir/licenceHeader.txt")
-    skipExistingHeaders=false
+    ignoreFailures = false
+    header = File("$rootDir/licenceHeader.txt")
+    skipExistingHeaders = false
 }
 
 dependencies {
     implementation("io.github.keymaster65:copper2go-api:3+")
     implementation("org.copper-engine:copper-coreengine:5.4.2") // needed for Java 21
 
+    testImplementation("net.jqwik:jqwik:1.8.0")
     testImplementation("org.assertj:assertj-assertions-generator:2+")
     testImplementation("org.junit.jupiter:junit-jupiter:5+")
     testImplementation("org.mockito:mockito-core:3+")
@@ -41,6 +42,7 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform {
+        includeEngines.add("jqwik")
         includeEngines.add("junit-jupiter")
     }
 }
