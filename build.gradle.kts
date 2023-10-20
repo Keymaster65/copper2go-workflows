@@ -32,9 +32,8 @@ license {
 
 dependencies {
     implementation("io.github.keymaster65:copper2go-api:3+")
-    implementation("org.copper-engine:copper-coreengine:5.4.2") // needed for Java 21
 
-    testImplementation("net.jqwik:jqwik:1.8.0")
+    testImplementation("net.jqwik:jqwik:1+")
     testImplementation("org.assertj:assertj-assertions-generator:2+")
     testImplementation("org.junit.jupiter:junit-jupiter:5+")
     testImplementation("org.mockito:mockito-core:3+")
